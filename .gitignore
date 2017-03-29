@@ -38,3 +38,31 @@ captures/
 
 # Keystore files
 *.jks
+
+# Android Studio 
+*.iml
+.idea
+.idea/*
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/datasources.xml
+.idea/dataSources.ids
+.idea/libraries
+.idea/tasks.xml
+.idea/vcs.xml
+.idea/workspace.xml
+*.iml
+*.iws
+*.ipr
+.idea/
+.gradle/
+local.properties
+/.idea

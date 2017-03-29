@@ -25,6 +25,8 @@ import android.text.TextWatcher;
 import android.text.Editable;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup.LayoutParams;
+import android.view.View.OnKeyListener;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -56,24 +58,26 @@ public class MainActivity extends AppCompatActivity
         db = new SQLiteDBHelper(this);
 
 
+
+
         final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
         mainInput.setGravity(Gravity.CENTER_HORIZONTAL);
 
 
+        //Supposed methods to make keyboard come up automatically
 //        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-
+//
 //        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
 //                .showSoftInput(mainInput, InputMethodManager.SHOW_FORCED);
-
+//
 //        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
 
         final TextView firstInput = (TextView) findViewById(R.id.firstInputText);
-
         Button bAdd =(Button)findViewById(R.id.button_add);
 
-
+        //fill first input on button click
         bAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +87,30 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
+        //fill first input on keyboard enter
+        mainInput.setOnKeyListener(new OnKeyListener()
+        {
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_ENTER:
+                            firstInput.setText(mainInput.getText());
+                            mainInput.setText("");
+                            mainInput.setHint("Input Item");
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
+        //Remove hint on text change
         TextWatcher fieldValidatorTextWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -96,22 +124,10 @@ public class MainActivity extends AppCompatActivity
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mainInput.setHint("");
             }
-
-            private boolean filterLongEnough() {
-                return mainInput.getText().toString().trim().length() > 2;
-            }
         };
         mainInput.addTextChangedListener(fieldValidatorTextWatcher);
 
 
-//        mainInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus)
-//                    mainInput.setHint("");
-//                else
-//                    mainInput.setHint("Your hint");
-//            }
-//        });
     }
 
     @Override
@@ -138,10 +154,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+       // ActionBar actionBar = getSupportActionBar();
+       // actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+       // actionBar.setDisplayShowTitleEnabled(true);
+        //actionBar.setTitle(mTitle);
     }
 
 

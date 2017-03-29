@@ -17,6 +17,14 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.app.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
+import android.text.TextWatcher;
+import android.text.Editable;
+import android.view.inputmethod.InputMethodManager;
+import android.view.ViewGroup.LayoutParams;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -46,6 +54,64 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         db = new SQLiteDBHelper(this);
+
+
+        final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
+        mainInput.setGravity(Gravity.CENTER_HORIZONTAL);
+
+
+//        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+//        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
+//                .showSoftInput(mainInput, InputMethodManager.SHOW_FORCED);
+
+//        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+
+        final TextView firstInput = (TextView) findViewById(R.id.firstInputText);
+
+        Button bAdd =(Button)findViewById(R.id.button_add);
+
+
+        bAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstInput.setText(mainInput.getText());
+                mainInput.setText("");
+                mainInput.setHint("Input Item");
+            }
+        });
+
+        TextWatcher fieldValidatorTextWatcher = new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mainInput.setHint("");
+            }
+
+            private boolean filterLongEnough() {
+                return mainInput.getText().toString().trim().length() > 2;
+            }
+        };
+        mainInput.addTextChangedListener(fieldValidatorTextWatcher);
+
+
+//        mainInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus)
+//                    mainInput.setHint("");
+//                else
+//                    mainInput.setHint("Your hint");
+//            }
+//        });
     }
 
     @Override
@@ -107,9 +173,9 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
+        /**
+         * A placeholder fragment containing a simple view.
+         */
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this

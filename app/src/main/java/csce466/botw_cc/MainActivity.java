@@ -27,11 +27,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup.LayoutParams;
 import android.view.View.OnKeyListener;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     SQLiteDBHelper db;
+    final ArrayList<TextView> textList = new ArrayList<TextView>();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -57,14 +60,23 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         db = new SQLiteDBHelper(this);
 
-
-
-
         final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
         mainInput.setGravity(Gravity.CENTER_HORIZONTAL);
+        final TextView firstInput = (TextView) findViewById(R.id.firstInputText);
+        final TextView secondInput = (TextView) findViewById(R.id.secondInputText);
+        final TextView thirdInput = (TextView) findViewById(R.id.thirdInputText);
+        final TextView fourthInput = (TextView) findViewById(R.id.fourthInputText);
+        final TextView fifthInput = (TextView) findViewById(R.id.fifthInputText);
+        textList.add(firstInput);
+        textList.add(secondInput);
+        textList.add(thirdInput);
+        textList.add(fourthInput);
+        textList.add(fifthInput);
+        final TextView suggestionInput = (EditText) findViewById(R.id.mainInputTextSuggestion);
+        suggestionInput.setGravity(Gravity.CENTER_HORIZONTAL);
+        Button bAdd =(Button)findViewById(R.id.button_add);
 
-
-        //Supposed methods to make keyboard come up automatically
+//        //Supposed methods to make keyboard come up automatically
 //        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 //
 //        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
@@ -73,22 +85,26 @@ public class MainActivity extends AppCompatActivity
 //        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-
-        final TextView firstInput = (TextView) findViewById(R.id.firstInputText);
-        Button bAdd =(Button)findViewById(R.id.button_add);
-
-        //fill first input on button click
+        //fill inputs on button click
         bAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstInput.setText(mainInput.getText());
+                if(firstInput.getText().toString().trim().equals(""))
+                    firstInput.setText(mainInput.getText());
+                else if (secondInput.getText().toString().trim().equals(""))
+                    secondInput.setText(mainInput.getText());
+                else if (thirdInput.getText().toString().trim().equals(""))
+                    thirdInput.setText(mainInput.getText());
+                else if (fourthInput.getText().toString().trim().equals(""))
+                    fourthInput.setText(mainInput.getText());
+                else if (fifthInput.getText().toString().trim().equals(""))
+                    fifthInput.setText(mainInput.getText());
                 mainInput.setText("");
                 mainInput.setHint("Input Item");
             }
         });
 
-
-        //fill first input on keyboard enter
+        //fill inputs on keyboard enter
         mainInput.setOnKeyListener(new OnKeyListener()
         {
             public boolean onKey(View v, int keyCode, KeyEvent event)
@@ -98,7 +114,16 @@ public class MainActivity extends AppCompatActivity
                     switch (keyCode)
                     {
                         case KeyEvent.KEYCODE_ENTER:
-                            firstInput.setText(mainInput.getText());
+                            if(firstInput.getText().toString().trim().equals(""))
+                                firstInput.setText(mainInput.getText());
+                            else if (secondInput.getText().toString().trim().equals(""))
+                                secondInput.setText(mainInput.getText());
+                            else if (thirdInput.getText().toString().trim().equals(""))
+                                thirdInput.setText(mainInput.getText());
+                            else if (fourthInput.getText().toString().trim().equals(""))
+                                fourthInput.setText(mainInput.getText());
+                            else if (fifthInput.getText().toString().trim().equals(""))
+                                fifthInput.setText(mainInput.getText());
                             mainInput.setText("");
                             mainInput.setHint("Input Item");
                             return true;
@@ -123,12 +148,42 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mainInput.setHint("");
+                //String str = String.format("%"+ mainInput.getText().length() +"s", findSuggestion(mainInput));
+                suggestionInput.setText(mainInput.getText());
             }
         };
         mainInput.addTextChangedListener(fieldValidatorTextWatcher);
-
-
     }
+
+    public CharSequence findSuggestion(TextView input){
+
+        return input.getText();
+       // return "Apple";
+    }
+
+    public void buttonRemove(View view) {
+        if (view.getId() == R.id.firstButtonRemove) {
+            sortTextFields(0);
+        } else if (view.getId() == R.id.secondButtonRemove) {
+            sortTextFields(1);
+        } else if (view.getId() == R.id.thirdButtonRemove){
+            sortTextFields(2);
+        } else if (view.getId() == R.id.fourthButtonRemove){
+            sortTextFields(3);
+        } else {
+            sortTextFields(4);
+        }
+    }
+
+    public void sortTextFields(int index){
+        textList.get(index).setText("");
+        while(index < textList.size()-1){
+            textList.get(index).setText(textList.get(index+1).getText());
+            textList.get(index+1).setText("");
+            index++;
+        }
+    }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -154,10 +209,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void restoreActionBar() {
-       // ActionBar actionBar = getSupportActionBar();
-       // actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-       // actionBar.setDisplayShowTitleEnabled(true);
-        //actionBar.setTitle(mTitle);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
     }
 
 

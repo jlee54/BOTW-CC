@@ -103,5 +103,9 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.insert(RECIPE_TABLE_NAME, null, cv);
     }
 
+    public void findRecipesByName(SQLiteDatabase sqLiteDatabase, String name){
+        //Some sort of fuzzy comparator or 'Like' sql statement should go here
+    }
+
 
 }

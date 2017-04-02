@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         db = new SQLiteDBHelper(this);
 
         final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
-        mainInput.setGravity(Gravity.CENTER_HORIZONTAL);
+       // mainInput.setGravity(Gravity.CENTER_HORIZONTAL);
         final TextView firstInput = (TextView) findViewById(R.id.firstInputText);
         final TextView secondInput = (TextView) findViewById(R.id.secondInputText);
         final TextView thirdInput = (TextView) findViewById(R.id.thirdInputText);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         textList.add(fourthInput);
         textList.add(fifthInput);
         final TextView suggestionInput = (EditText) findViewById(R.id.mainInputTextSuggestion);
-        suggestionInput.setGravity(Gravity.CENTER_HORIZONTAL);
+      //  suggestionInput.setGravity(Gravity.CENTER_HORIZONTAL);
         Button bAdd =(Button)findViewById(R.id.button_add);
 
 //        //Supposed methods to make keyboard come up automatically
@@ -149,7 +149,13 @@ public class MainActivity extends AppCompatActivity
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mainInput.setHint("");
                 //String str = String.format("%"+ mainInput.getText().length() +"s", findSuggestion(mainInput));
-                suggestionInput.setText(mainInput.getText());
+//                StringBuilder str = new StringBuilder();
+//                for(int i=0; i<mainInput.getText().length(); i++){
+//                    str.append(" ");
+//                }
+               // str.append(findSuggestion(mainInput));
+
+                suggestionInput.setText(findSuggestion(mainInput));
             }
         };
         mainInput.addTextChangedListener(fieldValidatorTextWatcher);
@@ -157,8 +163,9 @@ public class MainActivity extends AppCompatActivity
 
     public CharSequence findSuggestion(TextView input){
 
-        return input.getText();
-       // return "Apple";
+       // db.
+       // SQLiteDBHelper.findRecipesByName(db, input.getText().toString());
+        return input.getText() + "Bazinga";
     }
 
     public void buttonRemove(View view) {

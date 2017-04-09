@@ -1,6 +1,7 @@
 package csce466.botw_cc;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         db = new SQLiteDBHelper(this);
+        final SQLiteDatabase dbREAD = db.getReadableDatabase();
 
         final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
        // mainInput.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -155,16 +157,16 @@ public class MainActivity extends AppCompatActivity
 //                }
                // str.append(findSuggestion(mainInput));
 
-                suggestionInput.setText(findSuggestion(mainInput));
+                suggestionInput.setText(findSuggestion(mainInput, dbREAD));
             }
         };
         mainInput.addTextChangedListener(fieldValidatorTextWatcher);
     }
 
-    public CharSequence findSuggestion(TextView input){
+    public CharSequence findSuggestion(TextView input, SQLiteDatabase dbREAD){
 
        // db.
-       // SQLiteDBHelper.findRecipesByName(db, input.getText().toString());
+        //SQLiteDBHelper.findMaterialByName(dbREAD, input.getText().toString());
         return input.getText() + "Bazinga";
     }
 

@@ -34,8 +34,8 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
     public static final String RECIPE_COLUMN_MATERIAL_4_ID = "material4_id";
     public static final String RECIPE_COLUMN_MATERIAL_5_ID = "material5_id";
     public static final String RECIPE_COLUMN_TYPE = "type";
-    public static final String RECIPE_COLUMN_MODIFIER = "hearts";
-    public static final String RECIPE_COLUMN_HEARTS = "modifier";
+    public static final String RECIPE_COLUMN_HEARTS = "hearts";
+    public static final String RECIPE_COLUMN_MODIFIER = "modifier";
     public static final String RECIPE_COLUMN_EFFECT = "effect";
     public static final String RECIPE_COLUMN_TIME = "time";
 

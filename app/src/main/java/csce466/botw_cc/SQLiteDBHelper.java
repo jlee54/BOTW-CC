@@ -57,11 +57,11 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE " + RECIPE_TABLE_NAME + " (" +
                 RECIPE_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 RECIPE_COLUMN_NAME + " TEXT, " +
-                RECIPE_COLUMN_MATERIAL_1_ID + " INTEGER FOREIGN KEY, " +
-                RECIPE_COLUMN_MATERIAL_2_ID + " INTEGER FOREIGN KEY, " +
-                RECIPE_COLUMN_MATERIAL_3_ID + " INTEGER FOREIGN KEY, " +
-                RECIPE_COLUMN_MATERIAL_4_ID + " INTEGER FOREIGN KEY, " +
-                RECIPE_COLUMN_MATERIAL_5_ID + " INTEGER FOREIGN KEY, " +
+                RECIPE_COLUMN_MATERIAL_1_ID + " INTEGER, " +
+                RECIPE_COLUMN_MATERIAL_2_ID + " INTEGER, " +
+                RECIPE_COLUMN_MATERIAL_3_ID + " INTEGER, " +
+                RECIPE_COLUMN_MATERIAL_4_ID + " INTEGER, " +
+                RECIPE_COLUMN_MATERIAL_5_ID + " INTEGER, " +
                 RECIPE_COLUMN_TYPE + " TEXT, " +
                 RECIPE_COLUMN_HEARTS + " DECIMAL, " +
                 RECIPE_COLUMN_MODIFIER + " INTEGER, " +
@@ -256,8 +256,6 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         ArrayList<String> vegetableList = findMaterialNamesBySubType(sqLiteDatabase, "Green");
         ArrayList<String> mushroomList = findMaterialNamesBySubType(sqLiteDatabase, "Mushroom");
 
-        insertRecipeWithLookups(sqLiteDatabase, "", "", "", "", "", "", "Food", 3.0, 0, null, 0);
-
         insertRecipeWithLookups(sqLiteDatabase, "Apple Pie", "Apple", "Tabantha Wheat", "Cane Sugar", "Goat Butter", "0", "Food", 3.0, 0, null, 0);
         for (int i = 0; i < meatList.size(); i++) {
             insertRecipeWithLookups(sqLiteDatabase, "Meat Pie", "Tabantha Wheat", "Goat Butter", "Rock Salt", meatList.get(i), "0", "Food", 14.0, -1, "Various effects from raw meat choice. Raw Gourmet restores most with 14 hearts.", 0);
@@ -395,7 +393,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         insertRecipeWithLookups(sqLiteDatabase, "Curry Pilaf", "Goron Spice", "Goat Butter", "Hylian Rice", "Goron Spice", "0", "Food", 6.0, -1, "You can use any number of these ingredients.", 0);
         insertRecipeWithLookups(sqLiteDatabase, "Curry Pilaf", "Goron Spice", "Goat Butter", "Hylian Rice", "Goron Spice", "Goron Spice", "Food", 6.0, -1, "You can use any number of these ingredients.", 0);
         insertRecipeWithLookups(sqLiteDatabase, "Curry Pilaf", "Goron Spice", "Goat Butter", "Hylian Rice", "Goron Spice", "Goat Butter", "Food", 6.0, -1, "You can use any number of these ingredients.", 0);
-        insertRecipeWithLookups(sqLiteDatabase, "Curry Pilaf", "Goron Spice", "Goat Butter", "Hylian Rice", "Goron Spice", "Hylian Spice", "Food", 6.0, -1, "You can use any number of these ingredients.", 0);
+        insertRecipeWithLookups(sqLiteDatabase, "Curry Pilaf", "Goron Spice", "Goat Butter", "Hylian Rice", "Goron Spice", "Hylian Rice", "Food", 6.0, -1, "You can use any number of these ingredients.", 0);
 
 
         insertRecipeWithLookups(sqLiteDatabase, "Curry Pilaf", "Goron Spice", "Goat Butter", "Hylian Rice", "Goat Butter", "0", "Food", 6.0, -1, "You can use any number of these ingredients.", 0);
@@ -413,9 +411,9 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         insertRecipeWithLookups(sqLiteDatabase, "Pepper Steak", "Mighty Thistle", "Raw Bird Drumstick", "0", "0", "0", "Food", 3.0, 0, null, 0);
         insertRecipeWithLookups(sqLiteDatabase, "Plain Crepe", "Fresh Milk", "Bird Egg", "Tabantha Wheat", "Cane Sugar", "Goat Butter", "Food", 5.0, 0, null, 0);
         insertRecipeWithLookups(sqLiteDatabase, "Seafood Paella", "Hylian Rice", "Goat Butter", "Rock Salt", "Mighty Porgy", "Hearty Blueshell Snail", "Food", 12.0, 0, null, 0);
-        insertRecipeWithLookups(sqLiteDatabase, "Wheat Bread", "Tabanatha", "Rock Salt", "0", "0", "0", "Food", 2.0, 0, null, 0);
+        insertRecipeWithLookups(sqLiteDatabase, "Wheat Bread", "Tabantha Wheat", "Rock Salt", "0", "0", "0", "Food", 2.0, 0, null, 0);
 
-        insertRecipeWithLookups(sqLiteDatabase, "Fresh Milk", "0", "0", "0", "0", "0", "Food", 3.0, 0, "Add unknown extra ingredients to increase the hearts restored or add a special effect.", 0);
+        insertRecipeWithLookups(sqLiteDatabase, "Milk", "Fresh Milk", "0", "0", "0", "0", "Food", 3.0, 0, "Add unknown extra ingredients to increase the hearts restored or add a special effect.", 0);
 
 
     }
@@ -426,10 +424,10 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
                 insertRecipe(sqLiteDatabase, name,
                         findMaterialIdByName(sqLiteDatabase, one),
-                        Integer.parseInt(two) == 0 ? 0 : findMaterialIdByName(sqLiteDatabase, two),
-                        Integer.parseInt(three) == 0 ? 0 : findMaterialIdByName(sqLiteDatabase, three),
-                        Integer.parseInt(four) == 0 ? 0 : findMaterialIdByName(sqLiteDatabase, four),
-                        Integer.parseInt(five) == 0 ? 0 : findMaterialIdByName(sqLiteDatabase, five),
+                        two == "0" ? 0 : findMaterialIdByName(sqLiteDatabase, two),
+                        three == "0" ? 0 : findMaterialIdByName(sqLiteDatabase, three),
+                        four == "0" ? 0 : findMaterialIdByName(sqLiteDatabase, four),
+                        five == "0" ? 0 : findMaterialIdByName(sqLiteDatabase, five),
                         type, hearts, modifier, effect, time);
     }
 

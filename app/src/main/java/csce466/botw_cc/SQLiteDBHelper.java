@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Zack on 3/20/2017.
@@ -174,6 +176,36 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
             results.add(cursor.getString(cursor.getColumnIndex(MATERIAL_COLUMN_NAME)));
         }
         return results;
+    }
+
+    public static int findRecipeIdByMaterials(SQLiteDatabase sqLiteDatabase, int materialId1, int materialId2, int materialId3, int materialId4, int materialId5){
+
+        String[] tableColumns = new String[]{RECIPE_COLUMN_ID, RECIPE_COLUMN_NAME};
+        String whereClause = RECIPE_COLUMN_MATERIAL_1_ID + " = ? OR " + RECIPE_COLUMN_MATERIAL_1_ID + " = ? OR "
+                + RECIPE_COLUMN_MATERIAL_3_ID + " = ? OR " + RECIPE_COLUMN_MATERIAL_4_ID + " = ? OR " + RECIPE_COLUMN_MATERIAL_5_ID + " = ?";
+        String[] idArray = new String[]{Integer.toString(materialId1), Integer.toString(materialId2),
+                Integer.toString(materialId3), Integer.toString(materialId4), Integer.toString(materialId5)};
+        String[] whereArgs;
+        Cursor cursor;
+        HashMap<Integer, Integer> results = new HashMap<Integer, Integer>();
+        for(int i = 0; i < 5; i++){
+            whereArgs = new String[]{idArray[i], idArray[i], idArray[i], idArray[i], idArray[i]};
+            cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, tableColumns, whereClause, whereArgs, null, null, null, null, null);
+            while (cursor.moveToNext()) {
+                if(results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))){
+                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
+                }
+                else{
+                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), 1);
+                }
+            }
+        }
+        for(Map.Entry<Integer, Integer> entry : results.entrySet()){
+            if(entry.getValue() == 5){
+                return entry.getKey();
+            }
+        }
+        return 0;
     }
 
 }

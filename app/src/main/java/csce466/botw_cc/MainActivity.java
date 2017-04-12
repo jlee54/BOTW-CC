@@ -150,13 +150,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mainInput.setHint("");
-                //String str = String.format("%"+ mainInput.getText().length() +"s", findSuggestion(mainInput));
-//                StringBuilder str = new StringBuilder();
-//                for(int i=0; i<mainInput.getText().length(); i++){
-//                    str.append(" ");
-//                }
-               // str.append(findSuggestion(mainInput));
-
                 suggestionInput.setText(findSuggestion(mainInput, dbREAD));
             }
         };
@@ -165,9 +158,12 @@ public class MainActivity extends AppCompatActivity
 
     public CharSequence findSuggestion(TextView input, SQLiteDatabase dbREAD){
 
-       // db.
-        //SQLiteDBHelper.findMaterialByName(dbREAD, input.getText().toString());
-        return input.getText() + "Bazinga";
+        if(input.length() == 0){
+            return "";
+        } else {
+            return SQLiteDBHelper.findMaterialByName(dbREAD, input.getText().toString());
+        }
+
     }
 
     public void buttonRemove(View view) {

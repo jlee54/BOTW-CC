@@ -473,8 +473,17 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                 MATERIAL_COLUMN_NAME + " LIKE ?", new String[] { name + "%" }, null, null, null, null);
          */
 
-        cursor.moveToFirst();
-        return cursor.getString(cursor.getColumnIndex(MATERIAL_COLUMN_NAME));
+        //cursor.moveToFirst();
+        if(cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String suggestion = cursor.getString(cursor.getColumnIndex(MATERIAL_COLUMN_NAME));
+                if (suggestion.substring(0, name.length()).toLowerCase().equals(name.toLowerCase())) {
+                    return name + suggestion.substring(name.length());
+                }
+            }
+        }
+
+        return "";
     }
 
 

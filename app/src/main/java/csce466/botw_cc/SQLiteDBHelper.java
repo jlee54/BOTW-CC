@@ -162,9 +162,8 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                 MATERIAL_COLUMN_NAME + " = ?", new String[] {name}, null, null, null, null, null);
         cursor.moveToFirst();
         return cursor.getInt(cursor.getColumnIndex(MATERIAL_COLUMN_ID));
-
-
     }
+
 
     public static ArrayList<String> findMaterialNamesBySubType(SQLiteDatabase sqLiteDatabase, String subtype){
         Cursor cursor = sqLiteDatabase.query(true, MATERIAL_TABLE_NAME, new String[] { MATERIAL_COLUMN_ID, MATERIAL_COLUMN_SUBTYPE},
@@ -206,6 +205,13 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
             }
         }
         return 0;
+    }
+
+    public static String findRecipeNameById(SQLiteDatabase sqLiteDatabase, int id){
+        Cursor cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, new String[] { RECIPE_COLUMN_ID, RECIPE_COLUMN_NAME},
+                RECIPE_COLUMN_ID + " = ?", new String[]{Integer.toString(id)}, null, null, null, null, null);
+        cursor.moveToFirst();
+        return cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_NAME));
     }
 
 }

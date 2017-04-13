@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.app.*;
@@ -27,6 +28,7 @@ import android.text.Editable;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup.LayoutParams;
 import android.view.View.OnKeyListener;
+
 
 import java.util.ArrayList;
 
@@ -63,7 +65,6 @@ public class MainActivity extends AppCompatActivity
         final SQLiteDatabase dbREAD = db.getReadableDatabase();
 
         final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
-       // mainInput.setGravity(Gravity.CENTER_HORIZONTAL);
         final TextView firstInput = (TextView) findViewById(R.id.firstInputText);
         final TextView secondInput = (TextView) findViewById(R.id.secondInputText);
         final TextView thirdInput = (TextView) findViewById(R.id.thirdInputText);
@@ -75,65 +76,18 @@ public class MainActivity extends AppCompatActivity
         textList.add(fourthInput);
         textList.add(fifthInput);
         final TextView suggestionInput = (EditText) findViewById(R.id.mainInputTextSuggestion);
-      //  suggestionInput.setGravity(Gravity.CENTER_HORIZONTAL);
         Button bAdd =(Button)findViewById(R.id.button_add);
+        final TextView recipeName = (TextView) findViewById(R.id.recipeName);
 
-//        //Supposed methods to make keyboard come up automatically
-//        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-//
-//        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
-//                .showSoftInput(mainInput, InputMethodManager.SHOW_FORCED);
-//
-//        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        //Bring keyboard up
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        ((InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mainInput, 0);
 
         //fill inputs on button click
         bAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(firstInput.getText().toString().trim().equals(""))
-                    firstInput.setText(mainInput.getText());
-                else if (secondInput.getText().toString().trim().equals(""))
-                    secondInput.setText(mainInput.getText());
-                else if (thirdInput.getText().toString().trim().equals(""))
-                    thirdInput.setText(mainInput.getText());
-                else if (fourthInput.getText().toString().trim().equals(""))
-                    fourthInput.setText(mainInput.getText());
-                else if (fifthInput.getText().toString().trim().equals(""))
-                    fifthInput.setText(mainInput.getText());
-                mainInput.setText("");
-                mainInput.setHint("Input Item");
-            }
-        });
-
-        //fill inputs on keyboard enter
-        mainInput.setOnKeyListener(new OnKeyListener()
-        {
-            public boolean onKey(View v, int keyCode, KeyEvent event)
-            {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
-                {
-                    switch (keyCode)
-                    {
-                        case KeyEvent.KEYCODE_ENTER:
-                            if(firstInput.getText().toString().trim().equals(""))
-                                firstInput.setText(mainInput.getText());
-                            else if (secondInput.getText().toString().trim().equals(""))
-                                secondInput.setText(mainInput.getText());
-                            else if (thirdInput.getText().toString().trim().equals(""))
-                                thirdInput.setText(mainInput.getText());
-                            else if (fourthInput.getText().toString().trim().equals(""))
-                                fourthInput.setText(mainInput.getText());
-                            else if (fifthInput.getText().toString().trim().equals(""))
-                                fifthInput.setText(mainInput.getText());
-                            mainInput.setText("");
-                            mainInput.setHint("Input Item");
-                            return true;
-                        default:
-                            break;
-                    }
-                }
-                return false;
+                onEnter(dbREAD, suggestionInput, mainInput, recipeName);
             }
         });
 
@@ -154,10 +108,60 @@ public class MainActivity extends AppCompatActivity
             }
         };
         mainInput.addTextChangedListener(fieldValidatorTextWatcher);
+
+        mainInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    onEnter(dbREAD, suggestionInput, mainInput, recipeName);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+        //fill inputs on physical keyboard enter
+        mainInput.setOnKeyListener(new OnKeyListener()
+        {
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_ENTER:
+                            onEnter(dbREAD, suggestionInput, mainInput, recipeName);
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
+    }
+
+    public void onEnter(SQLiteDatabase dbREAD, TextView suggestionInput, TextView mainInput, TextView recipeName) {
+        if(!suggestionInput.getText().equals("")) {
+            mainInput.setText(suggestionInput.getText());
+            if (textList.get(0).getText().toString().trim().equals(""))
+                textList.get(0).setText(mainInput.getText());
+            else if (textList.get(1).getText().toString().trim().equals(""))
+                textList.get(1).setText(mainInput.getText());
+            else if (textList.get(2).getText().toString().trim().equals(""))
+                textList.get(2).setText(mainInput.getText());
+            else if (textList.get(3).getText().toString().trim().equals(""))
+                textList.get(3).setText(mainInput.getText());
+            else if (textList.get(4).getText().toString().trim().equals(""))
+                textList.get(4).setText(mainInput.getText());
+            mainInput.setText("");
+            mainInput.setHint("Input Item");
+            recipeName.setText(computeRecipe(dbREAD));
+        }
     }
 
     public CharSequence findSuggestion(TextView input, SQLiteDatabase dbREAD){
-
         if(input.length() == 0){
             return "";
         } else {
@@ -189,6 +193,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public String computeRecipe(SQLiteDatabase dbREAD){
+
+        if(!textList.get(0).getText().equals("")){
+            String one = textList.get(0).getText().toString();
+            String two = textList.get(1).getText().toString();
+            String three = textList.get(2).getText().toString();
+            String four = textList.get(3).getText().toString();
+            String five = textList.get(4).getText().toString();
+
+
+            int ret_id = SQLiteDBHelper.findRecipeIdByMaterials(dbREAD, SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(one)),
+                    two.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(two)),
+                    three.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(three)),
+                    four.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(four)),
+                    five.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(five)));
+
+            return SQLiteDBHelper.findRecipeNameById(dbREAD, ret_id);
+        }
+
+        return "";
+    }
+
+    public static String toTitleCase(String givenString) {
+        String[] arr = givenString.split(" ");
+        StringBuffer sb = new StringBuffer();
+
+        for (int i = 0; i < arr.length; i++) {
+            sb.append(Character.toUpperCase(arr[i].charAt(0)))
+                    .append(arr[i].substring(1)).append(" ");
+        }
+        return sb.toString().trim();
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {

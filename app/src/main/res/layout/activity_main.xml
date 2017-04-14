@@ -14,6 +14,8 @@
             android:id="@+id/mainInputTextSuggestion"
             android:layout_width="wrap_content"
             android:layout_height="58dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="300dp"
             android:capitalize="sentences"
             android:ems="10"
@@ -27,6 +29,8 @@
             android:id="@+id/mainInputText"
             android:layout_width="match_parent"
             android:layout_height="58dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="300dp"
             android:capitalize="sentences"
             android:ems="10"
@@ -55,6 +59,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="First Item"
+            android:paddingLeft="35dp"
             android:textColor="#949494"
             android:visibility="visible" />
 
@@ -79,6 +84,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="Second Item"
+            android:paddingLeft="35dp"
             android:textColor="#949494"
             android:visibility="visible" />
 
@@ -103,6 +109,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="Third Item"
+            android:paddingLeft="35dp"
             android:textColor="#949494"
             android:visibility="visible" />
 
@@ -127,6 +134,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="Fourth Item"
+            android:paddingLeft="35dp"
             android:textColor="#949494"
             android:visibility="visible" />
 
@@ -151,6 +159,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="Fifth Item"
+            android:paddingLeft="35dp"
             android:textColor="#949494"
             android:visibility="visible" />
 
@@ -167,23 +176,12 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/recipeName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="45dp"
-            android:gravity="right"
-            android:text="recipe name"
-            android:textColor="@android:color/holo_green_dark"
-            android:textColorHighlight="@android:color/primary_text_dark"
-            android:textSize="25dp" />
-
-        <TextView
             android:id="@+id/modifier"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="125dp"
-            android:layout_marginTop="105dp"
+            android:layout_height="46dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="195dp"
             android:gravity="right"
             android:text="less"
             android:textColor="@android:color/holo_red_dark"
@@ -193,9 +191,10 @@
         <TextView
             android:id="@+id/hearts"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="105dp"
+            android:layout_height="61dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="130dp"
             android:gravity="right"
             android:text="hearts#"
             android:textColor="@android:color/holo_red_dark"
@@ -205,9 +204,10 @@
         <TextView
             android:id="@+id/effect"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="55dp"
-            android:layout_marginTop="165dp"
+            android:layout_height="52dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="245dp"
             android:gravity="right"
             android:text="effect"
             android:textColor="@android:color/holo_red_dark"
@@ -226,6 +226,18 @@
             android:background="#000000"
             android:layout_marginTop="300dp" />
 
+        <TextView
+            android:id="@+id/recipeName"
+            android:layout_width="match_parent"
+            android:layout_height="87dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="35dp"
+            android:gravity="right"
+            android:text="recipe name"
+            android:textColor="@android:color/holo_green_dark"
+            android:textColorHighlight="@android:color/primary_text_dark"
+            android:textSize="25dp" />
 
 
     </FrameLayout>

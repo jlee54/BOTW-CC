@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +82,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
     public void generateSeed(SQLiteDatabase sqLiteDatabase){
         Seed.addAllMaterials(sqLiteDatabase, this);
-        insertRecipe(sqLiteDatabase, "Baked Apple", 1, 0, 0, 0, 0, "Food", 0.75, 0, null, 0);
+        insertRecipe(sqLiteDatabase, "Baked Apple", 8, 0, 0, 0, 0, "Food", 0.75, 0, null, 0);
         Seed.insertRecipesSeed(sqLiteDatabase, this);
     }
 
@@ -180,22 +180,38 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
     public static int findRecipeIdByMaterials(SQLiteDatabase sqLiteDatabase, int materialId1, int materialId2, int materialId3, int materialId4, int materialId5){
 
         String[] tableColumns = new String[]{RECIPE_COLUMN_ID, RECIPE_COLUMN_NAME};
-        String whereClause = RECIPE_COLUMN_MATERIAL_1_ID + " = ? OR " + RECIPE_COLUMN_MATERIAL_1_ID + " = ? OR "
-                + RECIPE_COLUMN_MATERIAL_3_ID + " = ? OR " + RECIPE_COLUMN_MATERIAL_4_ID + " = ? OR " + RECIPE_COLUMN_MATERIAL_5_ID + " = ?";
-        String[] idArray = new String[]{Integer.toString(materialId1), Integer.toString(materialId2),
-                Integer.toString(materialId3), Integer.toString(materialId4), Integer.toString(materialId5)};
+        ArrayList<String> idArray = new ArrayList<String>();
+        idArray.add(Integer.toString(materialId1));
+        idArray.add(Integer.toString(materialId2));
+        idArray.add(Integer.toString(materialId3));
+        idArray.add(Integer.toString(materialId4));
+        idArray.add(Integer.toString(materialId5));
         String[] whereArgs;
+        String whereClause;
         Cursor cursor;
         HashMap<Integer, Integer> results = new HashMap<Integer, Integer>();
-        for(int i = 0; i < 5; i++){
-            whereArgs = new String[]{idArray[i], idArray[i], idArray[i], idArray[i], idArray[i]};
-            cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, tableColumns, whereClause, whereArgs, null, null, null, null, null);
-            while (cursor.moveToNext()) {
-                if(results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))){
-                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
+        for(int i = 1; i < 6; i++){
+            whereClause = "material" + i + "_id = ? COLLATE NOCASE";
+            int removeId = -1;
+            for(int j = 0; j < idArray.size(); j++) {
+                whereArgs = new String[]{idArray.get(j)};
+                cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, tableColumns, whereClause, whereArgs, null, null, null, null, null);
+                if(cursor.getCount() > 0)
+                    removeId = j;
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    //Log.d("recipe: ", i + " " + cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_NAME)) + " " + cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)));
+                    if (results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))) {
+                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
+                    } else {
+                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), 1);
+                    }
+                    cursor.moveToNext();
                 }
-                else{
-                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), 1);
+                cursor.close();
+                if(removeId != -1){
+                    idArray.remove(removeId);
+                    j = idArray.size();
                 }
             }
         }

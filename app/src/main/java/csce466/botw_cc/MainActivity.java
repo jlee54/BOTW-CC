@@ -1,34 +1,29 @@
 package csce466.botw_cc;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import android.app.*;
-import android.os.*;
-import android.view.*;
-import android.widget.*;
-import android.text.TextWatcher;
-import android.text.Editable;
-import android.view.inputmethod.InputMethodManager;
-import android.view.ViewGroup.LayoutParams;
 import android.view.View.OnKeyListener;
-
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -208,8 +203,8 @@ public class MainActivity extends AppCompatActivity
                     three.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(three)),
                     four.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(four)),
                     five.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(five)));
-
-            return SQLiteDBHelper.findRecipeNameById(dbREAD, ret_id);
+            if(ret_id != 0)
+                return SQLiteDBHelper.findRecipeNameById(dbREAD, ret_id);
         }
 
         return "";

@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="58dp"
             android:layout_marginTop="300dp"
+            android:capitalize="sentences"
             android:ems="10"
             android:focusable="false"
             android:focusableInTouchMode="false"
@@ -27,14 +28,14 @@
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:layout_marginTop="300dp"
+            android:capitalize="sentences"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Input Item"
-            android:textColor="#4d4d4d"
-            android:visibility="visible"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            />
+            android:hint="Input Item"
+            android:inputType="textPersonName"
+            android:textColor="#4d4d4d"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/button_add"

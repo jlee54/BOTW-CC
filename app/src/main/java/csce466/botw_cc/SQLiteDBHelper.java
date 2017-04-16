@@ -82,7 +82,6 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
     public void generateSeed(SQLiteDatabase sqLiteDatabase){
         Seed.addAllMaterials(sqLiteDatabase, this);
-        insertRecipe(sqLiteDatabase, "Baked Apple", 8, 0, 0, 0, 0, "Food", 0.75, 0, null, 0);
         Seed.insertRecipesSeed(sqLiteDatabase, this);
     }
 

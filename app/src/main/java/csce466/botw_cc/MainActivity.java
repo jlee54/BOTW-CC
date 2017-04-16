@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     SQLiteDBHelper db;
+    SQLiteDatabase dbREAD;
     final ArrayList<TextView> textList = new ArrayList<TextView>();
+    TextView recipeName;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         db = new SQLiteDBHelper(this);
-        final SQLiteDatabase dbREAD = db.getReadableDatabase();
+        dbREAD = db.getReadableDatabase();
 
         final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
         final TextView firstInput = (TextView) findViewById(R.id.firstInputText);
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         textList.add(fifthInput);
         final TextView suggestionInput = (EditText) findViewById(R.id.mainInputTextSuggestion);
         Button bAdd =(Button)findViewById(R.id.button_add);
-        final TextView recipeName = (TextView) findViewById(R.id.recipeName);
+        recipeName = (TextView) findViewById(R.id.recipeName);
 
         //Bring keyboard up
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -171,8 +173,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void buttonRemove(View view) {
+        boolean notEmpty = true;
         if (view.getId() == R.id.firstButtonRemove) {
             sortTextFields(0);
+            notEmpty = false;
         } else if (view.getId() == R.id.secondButtonRemove) {
             sortTextFields(1);
         } else if (view.getId() == R.id.thirdButtonRemove){
@@ -182,6 +186,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             sortTextFields(4);
         }
+
+        if (notEmpty) recipeName.setText(computeRecipe(dbREAD));
     }
 
     public void sortTextFields(int index){

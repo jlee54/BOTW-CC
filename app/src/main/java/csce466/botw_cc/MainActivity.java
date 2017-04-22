@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity
 
     SQLiteDBHelper db;
     final ArrayList<TextView> textList = new ArrayList<TextView>();
+    final ArrayList<ImageView> imageList = new ArrayList<>();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity
         textList.add(thirdInput);
         textList.add(fourthInput);
         textList.add(fifthInput);
+        final ImageView firstInputImage = (ImageView) findViewById(R.id.firstInputImage);
+        imageList.add(firstInputImage);
         final TextView suggestionInput = (EditText) findViewById(R.id.mainInputTextSuggestion);
         Button bAdd =(Button)findViewById(R.id.button_add);
         final TextView recipeName = (TextView) findViewById(R.id.recipeName);
@@ -140,8 +145,12 @@ public class MainActivity extends AppCompatActivity
     public void onEnter(SQLiteDatabase dbREAD, TextView suggestionInput, TextView mainInput, TextView recipeName) {
         if(!suggestionInput.getText().equals("")) {
             mainInput.setText(suggestionInput.getText());
-            if (textList.get(0).getText().toString().trim().equals(""))
+            if (textList.get(0).getText().toString().trim().equals("")) {
                 textList.get(0).setText(mainInput.getText());
+                Log.d("ANUS", imageList.get(0).getImageMatrix().toString());
+                imageList.get(0).setImageBitmap(SQLiteDBHelper.findMaterialImageByName(dbREAD, mainInput.getText().toString()));
+                Log.d("ANUS", imageList.get(0).getImageMatrix().toString());
+            }
             else if (textList.get(1).getText().toString().trim().equals(""))
                 textList.get(1).setText(mainInput.getText());
             else if (textList.get(2).getText().toString().trim().equals(""))

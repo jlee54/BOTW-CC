@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -49,9 +50,10 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
     public static final String RECIPE_IMAGE_COLUMN_ID = "_id";
     public static final String RECIPE_IMAGE_COLUMN_IMAGE = "image";
 
-
+    Context activityContext;
     public SQLiteDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        activityContext = context;
     }
 
     @Override
@@ -83,11 +85,11 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("CREATE TABLE " + MATERIAL_IMAGE_TABLE_NAME + " (" +
                 MATERIAL_IMAGE_COLUMN_ID + " INTEGER, " +
-                MATERIAL_IMAGE_COLUMN_IMAGE + " BLOG");
+                MATERIAL_IMAGE_COLUMN_IMAGE + " BLOB" + ")");
 
         sqLiteDatabase.execSQL("CREATE TABLE " + RECIPE_IMAGE_TABLE_NAME + " (" +
                 RECIPE_IMAGE_COLUMN_ID + " INTEGER, " +
-                RECIPE_IMAGE_COLUMN_IMAGE + " BLOG");
+                RECIPE_IMAGE_COLUMN_IMAGE + " BLOB" + ")");
 
         generateSeed(sqLiteDatabase);
     }
@@ -103,7 +105,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         Seed.insertMaterialsSeed(sqLiteDatabase, this);
         insertRecipe(sqLiteDatabase, "Baked Apple", 8, 0, 0, 0, 0, "Food", 0.75, 0, null, 0);
         Seed.insertRecipesSeed(sqLiteDatabase, this);
-        Seed.insertMaterialImagesSeed(sqLiteDatabase, this);
+        Seed.insertMaterialImagesSeed(activityContext, sqLiteDatabase, this);
         Seed.insertRecipeImagesSeed(sqLiteDatabase, this);
 
     }
@@ -267,5 +269,21 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         return cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_NAME));
     }
+
+    public static Bitmap findMaterialImageByName(SQLiteDatabase sqLiteDatabase, String material){
+        int id = findMaterialIdByName(sqLiteDatabase, material);
+        Cursor cursor = sqLiteDatabase.query(true, MATERIAL_IMAGE_TABLE_NAME, new String[] { MATERIAL_IMAGE_COLUMN_ID, MATERIAL_IMAGE_COLUMN_IMAGE},
+                MATERIAL_IMAGE_COLUMN_ID + " = ?", new String[]{Integer.toString(id)}, null, null, null, null, null);
+        cursor.moveToFirst();
+        return (Bitmap)DbBitmapUtility.getImage(cursor.getBlob(cursor.getColumnIndex(MATERIAL_IMAGE_COLUMN_IMAGE)));
+    }
+
+//    public static Bitmap findRecipeImageById(SQLiteDatabase sqLiteDatabase, String recipe){
+//        int id = findRecipeIdByName(sqLiteDatabase, recipe);
+//        Cursor cursor = sqLiteDatabase.query(true, RECIPE_IMAGE_TABLE_NAME, new String[] { RECIPE_IMAGE_COLUMN_ID, RECIPE_IMAGE_COLUMN_IMAGE},
+//                RECIPE_IMAGE_COLUMN_ID + " = ?", new String[]{Integer.toString(id)}, null, null, null, null, null);
+//        cursor.moveToFirst();
+//        return (Bitmap)DbBitmapUtility.getImage(cursor.getBlob(cursor.getColumnIndex(RECIPE_IMAGE_COLUMN_IMAGE)));
+//    }
 
 }

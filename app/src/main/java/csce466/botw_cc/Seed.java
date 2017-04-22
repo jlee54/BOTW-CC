@@ -1,6 +1,6 @@
 package csce466.botw_cc;
 
-import android.content.res.Resources;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -335,8 +335,8 @@ public class Seed {
     }
 
 
-    public static void insertMaterialImagesSeed(SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){
-        Bitmap acornBitmap = BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.BotW_Acorn_Icon);
+    public static void insertMaterialImagesSeed(Context context, SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){
+        Bitmap acornBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.botw_acorn_icon);
 
         db.insertMaterialImage(sqLiteDatabase, SQLiteDBHelper.findMaterialIdByName(sqLiteDatabase, "Acorn"), DbBitmapUtility.getBytes(acornBitmap));
     }

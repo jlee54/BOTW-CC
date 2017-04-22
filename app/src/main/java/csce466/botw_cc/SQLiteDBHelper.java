@@ -41,6 +41,15 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
     public static final String RECIPE_COLUMN_EFFECT = "effect";
     public static final String RECIPE_COLUMN_TIME = "time";
 
+    public static final String MATERIAL_IMAGE_TABLE_NAME = "material_image";
+    public static final String MATERIAL_IMAGE_COLUMN_ID = "_id";
+    public static final String MATERIAL_IMAGE_COLUMN_IMAGE = "image";
+
+    public static final String RECIPE_IMAGE_TABLE_NAME = "recipe_image";
+    public static final String RECIPE_IMAGE_COLUMN_ID = "_id";
+    public static final String RECIPE_IMAGE_COLUMN_IMAGE = "image";
+
+
     public SQLiteDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -49,6 +58,8 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MATERIAL_TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RECIPE_TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MATERIAL_IMAGE_TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RECIPE_IMAGE_TABLE_NAME);
         sqLiteDatabase.execSQL("CREATE TABLE " + MATERIAL_TABLE_NAME + " (" +
                 MATERIAL_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 MATERIAL_COLUMN_NAME + " TEXT, " +
@@ -70,6 +81,14 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                 RECIPE_COLUMN_EFFECT + " TEXT, " +
                 RECIPE_COLUMN_TIME + " DECIMAL" + ")");
 
+        sqLiteDatabase.execSQL("CREATE TABLE " + MATERIAL_IMAGE_TABLE_NAME + " (" +
+                MATERIAL_IMAGE_COLUMN_ID + " INTEGER, " +
+                MATERIAL_IMAGE_COLUMN_IMAGE + " BLOG");
+
+        sqLiteDatabase.execSQL("CREATE TABLE " + RECIPE_IMAGE_TABLE_NAME + " (" +
+                RECIPE_IMAGE_COLUMN_ID + " INTEGER, " +
+                RECIPE_IMAGE_COLUMN_IMAGE + " BLOG");
+
         generateSeed(sqLiteDatabase);
     }
 
@@ -81,9 +100,12 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
     }
 
     public void generateSeed(SQLiteDatabase sqLiteDatabase){
-        Seed.addAllMaterials(sqLiteDatabase, this);
+        Seed.insertMaterialsSeed(sqLiteDatabase, this);
         insertRecipe(sqLiteDatabase, "Baked Apple", 8, 0, 0, 0, 0, "Food", 0.75, 0, null, 0);
         Seed.insertRecipesSeed(sqLiteDatabase, this);
+        Seed.insertMaterialImagesSeed(sqLiteDatabase, this);
+        Seed.insertRecipeImagesSeed(sqLiteDatabase, this);
+
     }
 
     public void insertMaterial(SQLiteDatabase sqLiteDatabase, String name, String type, String buff, String subtype){
@@ -126,6 +148,22 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         cv.put(RECIPE_COLUMN_TIME, time);
         sqLiteDatabase.insert(RECIPE_TABLE_NAME, null, cv);
     }
+
+    public void insertMaterialImage(SQLiteDatabase sqLiteDatabase, int id, byte[] image){
+        ContentValues cv = new ContentValues();
+        cv.put(MATERIAL_IMAGE_COLUMN_ID, id);
+        cv.put(MATERIAL_IMAGE_COLUMN_IMAGE, image);
+        sqLiteDatabase.insert(MATERIAL_IMAGE_TABLE_NAME, null, cv);
+    }
+
+    public void insertRecipeImage(SQLiteDatabase sqLiteDatabase, int id, byte[] image){
+        ContentValues cv = new ContentValues();
+        cv.put(MATERIAL_IMAGE_COLUMN_ID, id);
+        cv.put(MATERIAL_IMAGE_COLUMN_IMAGE, image);
+        sqLiteDatabase.insert(RECIPE_IMAGE_TABLE_NAME, null, cv);
+    }
+
+
 
     public static ArrayList<String> findMaterialsByName(SQLiteDatabase sqLiteDatabase, String name){
         Cursor cursor = sqLiteDatabase.query(true, MATERIAL_TABLE_NAME, new String[] { MATERIAL_COLUMN_ID, MATERIAL_COLUMN_NAME},

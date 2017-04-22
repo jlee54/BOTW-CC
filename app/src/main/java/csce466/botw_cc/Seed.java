@@ -1,6 +1,9 @@
 package csce466.botw_cc;
 
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.util.ArrayList;
 
@@ -10,7 +13,7 @@ import java.util.ArrayList;
 
 public class Seed {
 
-    public static void addAllMaterials(SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){
+    public static void insertMaterialsSeed(SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){
 
         db.insertMaterial(sqLiteDatabase, "Acorn", "Food", "", "Seasoning");
         db.insertMaterial(sqLiteDatabase, "Amber", "Ore", "", "");
@@ -330,4 +333,18 @@ public class Seed {
 
 
     }
+
+
+    public static void insertMaterialImagesSeed(SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){
+        Bitmap acornBitmap = BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.BotW_Acorn_Icon);
+
+        db.insertMaterialImage(sqLiteDatabase, SQLiteDBHelper.findMaterialIdByName(sqLiteDatabase, "Acorn"), DbBitmapUtility.getBytes(acornBitmap));
+    }
+
+    public static void insertRecipeImagesSeed(SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){
+
+    }
+
+
+
 }

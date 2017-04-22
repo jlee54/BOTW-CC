@@ -328,6 +328,29 @@ public class Seed {
 
         db.insertRecipeWithLookups(sqLiteDatabase, "Milk", "Fresh Milk", "0", "0", "0", "0", "Food", 3.0, 0, "Add unknown extra ingredients to increase the hearts restored or add a special effect.", 0);
 
+    }
+
+    public static void addSingleRecipes(SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){
+        //db.insertRecipeWithLookups(sqLiteDatabase, "", "", "0", "0", "0", "0", "Food", 6.0, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Hard Boiled Egg", "Egg", "0", "0", "0", "0", "Food", 1.5, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Baked Apple", "Apple", "0", "0", "0", "0", "Food", 0.75, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Baked Palm Fruit", "Palm Fruit", "0", "0", "0", "0", "Food", 1.5, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Roasted Acorn", "Acorn", "0", "0", "0", "0", "Food", 0.5, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Roasted Bass", "Hyrule Bass", "0", "0", "0", "0", "Food", 1.5, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Roasted Bird Drumstick", "Raw Bird Drumstick", "0", "0", "0", "0", "Food", 1.5, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Roasted Radish", "Hearty Radish", "0", "0", "0", "0", "Food", 3.75, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Seared Gourmet Steak", "Raw Gourmet Meat", "0", "0", "0", "0", "Food", 4.5, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Seared Prime Steak", "Raw Prime Meat", "0", "0", "0", "0", "Food", 2.25, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Seared Steak", "Raw Meat", "0", "0", "0", "0", "Food", 1.5, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Toasted Hearty Truffle", "Hearty Truffle", "0", "0", "0", "0", "Food", 3.0, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Toasty Hylian Shroom", "Hylian Shroom", "0", "0", "0", "0", "Food", 0.75, 0, "", 0);
+
+
+
+
+
+
+
 
     }
 }

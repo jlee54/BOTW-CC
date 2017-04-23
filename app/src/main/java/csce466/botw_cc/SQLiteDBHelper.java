@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -180,26 +179,24 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
         String[] tableColumns = new String[]{RECIPE_COLUMN_ID, RECIPE_COLUMN_NAME};
         ArrayList<String> idArray = new ArrayList<String>();
-        idArray.add(Integer.toString(materialId1));
-        idArray.add(Integer.toString(materialId2));
-        idArray.add(Integer.toString(materialId3));
-        idArray.add(Integer.toString(materialId4));
-        idArray.add(Integer.toString(materialId5));
+        if(materialId1 != 0)idArray.add(Integer.toString(materialId1));
+        if(materialId2 != 0)idArray.add(Integer.toString(materialId2));
+        if(materialId3 != 0)idArray.add(Integer.toString(materialId3));
+        if(materialId4 != 0)idArray.add(Integer.toString(materialId4));
+        if(materialId5 != 0)idArray.add(Integer.toString(materialId5));
+        int numberOfMaterials = idArray.size();
         String[] whereArgs;
         String whereClause;
         Cursor cursor;
         HashMap<Integer, Integer> results = new HashMap<Integer, Integer>();
-        for(int i = 1; i < 6; i++){
-            whereClause = "material" + i + "_id = ? COLLATE NOCASE";
-            int removeId = -1;
-            for(int j = 0; j < idArray.size(); j++) {
-                whereArgs = new String[]{idArray.get(j)};
+
+        for(int i = 0; i < numberOfMaterials; i++){
+            for(int j = 1; j <= numberOfMaterials; j++){
+                whereArgs = new String[]{idArray.get(i)};
+                whereClause = "material" + j + "_id = ?";
                 cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, tableColumns, whereClause, whereArgs, null, null, null, null, null);
-                if(cursor.getCount() > 0)
-                    removeId = j;
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
-                    //Log.d("recipe: ", i + " " + cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_NAME)) + " " + cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)));
                     if (results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))) {
                         results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
                     } else {
@@ -208,10 +205,23 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                     cursor.moveToNext();
                 }
                 cursor.close();
-                if(removeId != -1){
-                    idArray.remove(removeId);
-                    j = idArray.size();
+            }
+        }
+        for(int i = numberOfMaterials; i < 5; i++){
+            for(int j = numberOfMaterials + 1; j <= 5; j++ ){
+                whereArgs = new String[]{"0"};
+                whereClause = "material" + j + "_id = ?";
+                cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, tableColumns, whereClause, whereArgs, null, null, null, null, null);
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    if (results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))) {
+                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
+                    } else {
+                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), 1);
+                    }
+                    cursor.moveToNext();
                 }
+                cursor.close();
             }
         }
         for(Map.Entry<Integer, Integer> entry : results.entrySet()){

@@ -208,21 +208,19 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
             }
         }
         for(int i = numberOfMaterials; i < 5; i++){
-            for(int j = numberOfMaterials + 1; j <= 5; j++ ){
-                whereArgs = new String[]{"0"};
-                whereClause = "material" + j + "_id = ?";
-                cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, tableColumns, whereClause, whereArgs, null, null, null, null, null);
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    if (results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))) {
-                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
-                    } else {
-                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), 1);
-                    }
-                    cursor.moveToNext();
+            whereArgs = new String[]{"0"};
+            whereClause = "material" + (i + 1) + "_id = ?";
+            cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, tableColumns, whereClause, whereArgs, null, null, null, null, null);
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                if (results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))) {
+                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
+                } else {
+                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), 1);
                 }
-                cursor.close();
+                cursor.moveToNext();
             }
+            cursor.close();
         }
         for(Map.Entry<Integer, Integer> entry : results.entrySet()){
             if(entry.getValue() == 5){

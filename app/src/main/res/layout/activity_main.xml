@@ -201,7 +201,6 @@
             android:layout_gravity="right"
             android:gravity="center"
             android:text="effect"
-            android:x
             android:textColor="@android:color/holo_red_dark"
             android:textColorHighlight="@android:color/primary_text_dark"
             android:textSize="25dp" />

@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -173,10 +174,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void buttonRemove(View view) {
-        boolean notEmpty = true;
         if (view.getId() == R.id.firstButtonRemove) {
             sortTextFields(0);
-            notEmpty = false;
         } else if (view.getId() == R.id.secondButtonRemove) {
             sortTextFields(1);
         } else if (view.getId() == R.id.thirdButtonRemove){
@@ -187,7 +186,12 @@ public class MainActivity extends AppCompatActivity
             sortTextFields(4);
         }
 
-        if (notEmpty) recipeName.setText(computeRecipe(dbREAD));
+        if(textList.get(0).getText().toString().equals("")){
+            recipeName.setText("");
+        } else {
+            recipeName.setText(computeRecipe(dbREAD));
+            if (recipeName.getText().equals("")) recipeName.setText("Dubious Food");
+        }
     }
 
     public void sortTextFields(int index){
@@ -201,7 +205,7 @@ public class MainActivity extends AppCompatActivity
 
     public String computeRecipe(SQLiteDatabase dbREAD){
 
-        if(!textList.get(0).getText().equals("")){
+        if(textList.size() <= 0 || !textList.get(0).getText().equals("")){
             String one = textList.get(0).getText().toString();
             String two = textList.get(1).getText().toString();
             String three = textList.get(2).getText().toString();

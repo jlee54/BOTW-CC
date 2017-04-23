@@ -75,6 +75,7 @@ public class Seed {
         db.insertMaterial(sqLiteDatabase, "Hydromelon", "Food", "", "Fruit");
         db.insertMaterial(sqLiteDatabase, "Hylian Rice", "Food", "", "Seasoning" );
         db.insertMaterial(sqLiteDatabase, "Hyrule Bass", "Food", "", "Mushroom");
+        db.insertMaterial(sqLiteDatabase, "Hylian Shroom", "Food", "", "Mushroom");
         db.insertMaterial(sqLiteDatabase, "Hyrule Herb", "Food", "", "Green");
         db.insertMaterial(sqLiteDatabase, "Ice Keese Wing", "Monster Part", "", "");
         db.insertMaterial(sqLiteDatabase, "Icy Lizalfos Tail", "Monster Part", "", "");
@@ -108,7 +109,7 @@ public class Seed {
         db.insertMaterial(sqLiteDatabase, "Palm Fruit", "Food", "", "Fruit");
         db.insertMaterial(sqLiteDatabase, "Raw Bird Drumstick", "Food", "", "Meat");
         db.insertMaterial(sqLiteDatabase, "Raw Bird Thigh", "Food", "", "Meat");
-        db.insertMaterial(sqLiteDatabase, "Ram Gourmet Meat", "Food", "", "Meat");
+        db.insertMaterial(sqLiteDatabase, "Raw Gourmet Meat", "Food", "", "Meat");
         db.insertMaterial(sqLiteDatabase, "Raw Meat", "Food", "", "Meat");
         db.insertMaterial(sqLiteDatabase, "Raw Prime Meat", "Food", "", "Meat");
         db.insertMaterial(sqLiteDatabase, "Raw Whole Bird", "Food", "", "Meat");
@@ -168,6 +169,8 @@ public class Seed {
         ArrayList<String> seafoodList = db.findMaterialNamesBySubType(sqLiteDatabase, "Seafood");
         ArrayList<String> vegetableList = db.findMaterialNamesBySubType(sqLiteDatabase, "Green");
         ArrayList<String> mushroomList = db.findMaterialNamesBySubType(sqLiteDatabase, "Mushroom");
+
+        addSingleRecipes(sqLiteDatabase, db);
 
         db.insertRecipeWithLookups(sqLiteDatabase, "Apple Pie", "Apple", "Tabantha Wheat", "Cane Sugar", "Goat Butter", "0", "Food", 3.0, 0, null, 0);
         for (int i = 0; i < meatList.size(); i++) {
@@ -332,7 +335,7 @@ public class Seed {
 
     public static void addSingleRecipes(SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){
         //db.insertRecipeWithLookups(sqLiteDatabase, "", "", "0", "0", "0", "0", "Food", 6.0, 0, "", 0);
-        db.insertRecipeWithLookups(sqLiteDatabase, "Hard Boiled Egg", "Egg", "0", "0", "0", "0", "Food", 1.5, 0, "", 0);
+        db.insertRecipeWithLookups(sqLiteDatabase, "Hard Boiled Egg", "Bird Egg", "0", "0", "0", "0", "Food", 1.5, 0, "", 0);
         db.insertRecipeWithLookups(sqLiteDatabase, "Baked Apple", "Apple", "0", "0", "0", "0", "Food", 0.75, 0, "", 0);
         db.insertRecipeWithLookups(sqLiteDatabase, "Baked Palm Fruit", "Palm Fruit", "0", "0", "0", "0", "Food", 1.5, 0, "", 0);
         db.insertRecipeWithLookups(sqLiteDatabase, "Roasted Acorn", "Acorn", "0", "0", "0", "0", "Food", 0.5, 0, "", 0);

@@ -220,7 +220,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         String[] whereArgs;
         String whereClause;
         Cursor cursor;
-        HashMap<Integer, Integer> results = new HashMap<Integer, Integer>();
+        HashMap<Integer, HashMap<Integer, Integer>> results = new HashMap<>();
 
         for(int i = 0; i < numberOfMaterials; i++){
             for(int j = 1; j <= numberOfMaterials; j++){
@@ -230,9 +230,15 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
                     if (results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))) {
-                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
+                        if(!results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))).containsKey(j)){
+                            results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))).put(j, 1);
+                            results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))).put(6, results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))).get(6) + 1);
+                        }
                     } else {
-                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), 1);
+                        HashMap<Integer, Integer> columnMatched = new HashMap<Integer, Integer>();
+                        columnMatched.put(j, 1);
+                        columnMatched.put(6, 1);
+                        results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), columnMatched);
                     }
                     cursor.moveToNext();
                 }
@@ -246,17 +252,35 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 if (results.containsKey(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)))) {
-                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))) + 1);
+                    if(!results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))).containsKey(i+1)){
+                        results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))).put(i+1, 1);
+                        results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))).put(6, results.get(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID))).get(6) + 1);
+                    }
                 } else {
-                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), 1);
+                    HashMap<Integer, Integer> columnMatched = new HashMap<Integer, Integer>();
+                    columnMatched.put(i+1, 1);
+                    columnMatched.put(6, 1);
+                    results.put(cursor.getInt(cursor.getColumnIndex(RECIPE_COLUMN_ID)), columnMatched);
                 }
                 cursor.moveToNext();
             }
             cursor.close();
         }
-        for(Map.Entry<Integer, Integer> entry : results.entrySet()){
-            if(entry.getValue() == 5){
+        boolean flag = true;
+        for(Map.Entry<Integer, HashMap<Integer, Integer>> entry : results.entrySet()){
+            for(int i = 1; i <= 6; i++){
+                if(!entry.getValue().containsKey(i)){
+                    flag = false;
+                }
+            }
+            if(entry.getValue().get(6) != 5){
+                flag = false;
+            }
+            if(flag == true){
                 return entry.getKey();
+            }
+            else{
+                flag = true;
             }
         }
         return 0;

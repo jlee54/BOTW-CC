@@ -207,7 +207,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         return arraylist;
     }
 
-    public static int findRecipeIdByMaterials(SQLiteDatabase sqLiteDatabase, int materialId1, int materialId2, int materialId3, int materialId4, int materialId5){
+    public static HashMap<String, String> findRecipeIdByMaterials(SQLiteDatabase sqLiteDatabase, int materialId1, int materialId2, int materialId3, int materialId4, int materialId5){
 
         String[] tableColumns = new String[]{RECIPE_COLUMN_ID, RECIPE_COLUMN_NAME};
         ArrayList<String> idArray = new ArrayList<String>();
@@ -277,13 +277,13 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                 flag = false;
             }
             if(flag == true){
-                return entry.getKey();
+                return getRecipeHash(sqLiteDatabase, entry.getKey());
             }
             else{
                 flag = true;
             }
         }
-        return 0;
+        return new HashMap<String, String>();
     }
 
     public static String findRecipeNameById(SQLiteDatabase sqLiteDatabase, int id){
@@ -291,6 +291,22 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                 RECIPE_COLUMN_ID + " = ?", new String[]{Integer.toString(id)}, null, null, null, null, null);
         cursor.moveToFirst();
         return cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_NAME));
+    }
+
+    public static HashMap<String, String> getRecipeHash(SQLiteDatabase sqLiteDatabase, int id){
+
+        Cursor cursor = sqLiteDatabase.query(true, RECIPE_TABLE_NAME, new String[] { RECIPE_COLUMN_ID, RECIPE_COLUMN_NAME, RECIPE_COLUMN_TYPE, RECIPE_COLUMN_HEARTS,
+            RECIPE_COLUMN_MODIFIER, RECIPE_COLUMN_EFFECT, RECIPE_COLUMN_TIME},
+                RECIPE_COLUMN_ID + " = ?", new String[]{Integer.toString(id)}, null, null, null, null, null);
+        cursor.moveToFirst();
+        HashMap<String, String> recipeHash = new HashMap<String, String>();
+        recipeHash.put("Name", cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_NAME)));
+        recipeHash.put("Type", cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_TYPE)));
+        recipeHash.put("Hearts", cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_HEARTS)));
+        recipeHash.put("Modifier", cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_MODIFIER)));
+        recipeHash.put("Effect", cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_EFFECT)));
+        recipeHash.put("Time", cursor.getString(cursor.getColumnIndex(RECIPE_COLUMN_TIME)));
+        return recipeHash;
     }
 
 }

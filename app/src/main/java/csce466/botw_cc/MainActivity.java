@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MainActivity extends AppCompatActivity
@@ -154,15 +155,15 @@ public class MainActivity extends AppCompatActivity
         if(!suggestionInput.getText().equals("")) {
             mainInput.setText(suggestionInput.getText());
             if (textList.get(0).getText().toString().trim().equals(""))
-                textList.get(0).setText(mainInput.getText());
+                textList.get(0).setText(toTitleCase(mainInput.getText().toString()));
             else if (textList.get(1).getText().toString().trim().equals(""))
-                textList.get(1).setText(mainInput.getText());
+                textList.get(1).setText(toTitleCase(mainInput.getText().toString()));
             else if (textList.get(2).getText().toString().trim().equals(""))
-                textList.get(2).setText(mainInput.getText());
+                textList.get(2).setText(toTitleCase(mainInput.getText().toString()));
             else if (textList.get(3).getText().toString().trim().equals(""))
-                textList.get(3).setText(mainInput.getText());
+                textList.get(3).setText(toTitleCase(mainInput.getText().toString()));
             else if (textList.get(4).getText().toString().trim().equals(""))
-                textList.get(4).setText(mainInput.getText());
+                textList.get(4).setText(toTitleCase(mainInput.getText().toString()));
             mainInput.setText("");
             mainInput.setHint("Input Item");
             recipeName.setText(computeRecipe(dbREAD));
@@ -220,13 +221,17 @@ public class MainActivity extends AppCompatActivity
             String five = textList.get(4).getText().toString();
 
 
-            int ret_id = SQLiteDBHelper.findRecipeIdByMaterials(dbREAD, SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(one)),
+            HashMap<String, String> recipe = SQLiteDBHelper.findRecipeIdByMaterials(dbREAD, SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(one)),
                     two.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(two)),
                     three.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(three)),
                     four.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(four)),
                     five.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(five)));
-            if(ret_id != 0)
-                return SQLiteDBHelper.findRecipeNameById(dbREAD, ret_id);
+
+
+            String name =  recipe.get("Name");
+            if(name != null) {
+                return name;
+            }
         }
 
         return "";

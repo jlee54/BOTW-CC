@@ -1,6 +1,8 @@
 package csce466.botw_cc;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -170,6 +172,10 @@ public class Seed {
         ArrayList<String> vegetableList = db.findMaterialNamesBySubType(sqLiteDatabase, "Green");
         ArrayList<String> mushroomList = db.findMaterialNamesBySubType(sqLiteDatabase, "Mushroom");
 
+        Log.d("Meats", "0");
+
+        sqLiteDatabase.beginTransaction();
+
         addSingleRecipes(sqLiteDatabase, db);
 
         db.insertRecipeWithLookups(sqLiteDatabase, "Apple Pie", "Apple", "Tabantha Wheat", "Cane Sugar", "Goat Butter", "0", "Food", 3.0, 0, null, 0);
@@ -196,104 +202,109 @@ public class Seed {
                 }
             }
         }
+        Log.d("Meats", "1");
 
-        for(int i = 0; i < fruitList.size(); i++) {
-            if(fruitList.get(i) != "Apple") {
-                db.insertRecipeWithLookups(sqLiteDatabase, "Fruit Pie", "Tabantha Wheat", "Cane Sugar", "Goat Butter", fruitList.get(i), "0", "Food", 3.0, 1, "Various effects from fruit choice(s).", 0);
-            }
-            db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), "0", "0", "0", "0", "Food", 1.0, 0, "Use other fruits or more fruits to restore more hearts or add special effects.", 0);
-            for (int j = 0; j < fruitList.size(); j++) {
-                db.insertRecipeWithLookups(sqLiteDatabase, "Fruit Pie", "Tabantha Wheat", "Cane Sugar", "Goat Butter", fruitList.get(i), fruitList.get(j), "Food", 3.0, 1, "Various effects from fruit choice(s).", 0);
-                db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), fruitList.get(j), "0", "0", "0", "Food", 1.0, 1, "Use other fruits or more fruits to restore more hearts or add special effects.", 0);
-                if (fruitList.get(i) != fruitList.get(j)) {
-                    db.insertRecipeWithLookups(sqLiteDatabase, "Fruit Cake", "Tabantha Wheat", "Cane Sugar", fruitList.get(i), fruitList.get(j), "0", "Food", 5.0, 1, "Always use different fruits. Switch fruits for various effects.", 0);
-                }
-                for (int k = 0; k < fruitList.size(); k++) {
-                    if (fruitList.get(i) != fruitList.get(k) && fruitList.get(j) != fruitList.get(k)) {
-                        db.insertRecipeWithLookups(sqLiteDatabase, "Fruit Cake", "Tabantha Wheat", "Cane Sugar", fruitList.get(i), fruitList.get(j), "0", "Food", 5.0, 1, "Always use different fruits. Switch fruits for various effects.", 0);
-                    }
-                    db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), fruitList.get(j), fruitList.get(k), "0", "0", "Food", 1.0, 1, "Use other fruits or more fruits to restore more hearts or add special effects.", 0);
-                    for (int m = 0; m < fruitList.size(); m++) {
-                        db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), fruitList.get(j), fruitList.get(k), fruitList.get(m), "0", "Food", 1.0, 1, "Use other fruits or more fruits to restore more hearts or add special effects.", 0);
-                        for (int n = 0; n < fruitList.size(); n++) {
-                            db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), fruitList.get(j), fruitList.get(k), fruitList.get(m), fruitList.get(n), "Food", 1.0, 1, "Use other fruits to restore more hearts or add special effects.", 0);
-                        }
-                    }
-                }
-            }
-        }
+//        for(int i = 0; i < fruitList.size(); i++) {
+//            if(fruitList.get(i) != "Apple") {
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Fruit Pie", "Tabantha Wheat", "Cane Sugar", "Goat Butter", fruitList.get(i), "0", "Food", 3.0, 1, "Various effects from fruit choice(s).", 0);
+//            }
+//            db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), "0", "0", "0", "0", "Food", 1.0, 0, "Use other fruits or more fruits to restore more hearts or add special effects.", 0);
+//            for (int j = 0; j < fruitList.size(); j++) {
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Fruit Pie", "Tabantha Wheat", "Cane Sugar", "Goat Butter", fruitList.get(i), fruitList.get(j), "Food", 3.0, 1, "Various effects from fruit choice(s).", 0);
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), fruitList.get(j), "0", "0", "0", "Food", 1.0, 1, "Use other fruits or more fruits to restore more hearts or add special effects.", 0);
+//                if (fruitList.get(i) != fruitList.get(j)) {
+//                    db.insertRecipeWithLookups(sqLiteDatabase, "Fruit Cake", "Tabantha Wheat", "Cane Sugar", fruitList.get(i), fruitList.get(j), "0", "Food", 5.0, 1, "Always use different fruits. Switch fruits for various effects.", 0);
+//                }
+//                for (int k = 0; k < fruitList.size(); k++) {
+//                    if (fruitList.get(i) != fruitList.get(k) && fruitList.get(j) != fruitList.get(k)) {
+//                        db.insertRecipeWithLookups(sqLiteDatabase, "Fruit Cake", "Tabantha Wheat", "Cane Sugar", fruitList.get(i), fruitList.get(j), "0", "Food", 5.0, 1, "Always use different fruits. Switch fruits for various effects.", 0);
+//                    }
+//                    db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), fruitList.get(j), fruitList.get(k), "0", "0", "Food", 1.0, 1, "Use other fruits or more fruits to restore more hearts or add special effects.", 0);
+//                    for (int m = 0; m < fruitList.size(); m++) {
+//                        db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), fruitList.get(j), fruitList.get(k), fruitList.get(m), "0", "Food", 1.0, 1, "Use other fruits or more fruits to restore more hearts or add special effects.", 0);
+//                        for (int n = 0; n < fruitList.size(); n++) {
+//                            db.insertRecipeWithLookups(sqLiteDatabase, "Simmered Fruit", fruitList.get(i), fruitList.get(j), fruitList.get(k), fruitList.get(m), fruitList.get(n), "Food", 1.0, 1, "Use other fruits to restore more hearts or add special effects.", 0);
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         db.insertRecipeWithLookups(sqLiteDatabase, "Monster Cake", "Monster Extract", "Tabantha Wheat", "Cane Sugar", "Goat Butter", "0", "Food", 0.25, 0, "Restores five hearts if made during Blood Moon", 0);
         db.insertRecipeWithLookups(sqLiteDatabase, "Nutcake", "Acorn", "Tabantha Wheat", "Cane Sugar", "Goat Butter", "0", "Food", 3.0, 0, "The Acorn can be swapped for Chickaloo Tree Nuts", 0);
         db.insertRecipeWithLookups(sqLiteDatabase, "Nutcake", "Chickaloo Tree Nut", "Tabantha Wheat", "Cane Sugar", "Goat Butter", "0", "Food", 3.0, 0, "The Chickaloo Tree Nut can be swapped for an Acorn", 0);
         //Fruit Cake in fruit loop above
+        Log.d("Meats", "2");
 
-        for(int i=0; i < vegetableList.size(); i++) {
-            //Probably smaller heart value for just one carrot
-            if(vegetableList.get(i).contains("Carrot")) {
-                db.insertRecipeWithLookups(sqLiteDatabase, "Carrot Cake", "Tabantha Wheat", "Cane Sugar", "Goat Butter", vegetableList.get(i), "0", "Food", 7.0, 0, "Use two of the same carrots for special effects.", 0);
-            }
-            db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), "0", "0", "0", "0", "Food", 2.0, 0, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
-            for (int j = 0; j < vegetableList.size(); j++) {
-                if(vegetableList.get(i).contains("Carrot") && vegetableList.get(j).contains("Carrot")) {
-                    db.insertRecipeWithLookups(sqLiteDatabase, "Carrot Cake", "Tabantha Wheat", "Cane Sugar", "Goat Butter", vegetableList.get(i), vegetableList.get(i), "Food", 7.0, 0, "Use two of the same carrots for special effects.", 0);
-                }
-                db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), vegetableList.get(j), "0", "0", "0", "Food", 2.0, 1, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
-                for (int k = 0; k < vegetableList.size(); k++) {
-                    db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), vegetableList.get(j), vegetableList.get(k), "0", "0", "Food", 2.0, 1, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
-                    for (int m = 0; m < vegetableList.size(); m++) {
-                        db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), vegetableList.get(j), vegetableList.get(k), vegetableList.get(m), "0", "Food", 2.0, 1, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
-                        for (int n = 0; n < vegetableList.size(); n++) {
-                            db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), vegetableList.get(j), vegetableList.get(k), vegetableList.get(m), vegetableList.get(n), "Food", 2.0, 1, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
-                        }
-                    }
-                }
-            }
-        }
+//        for(int i=0; i < vegetableList.size(); i++) {
+//            //Probably smaller heart value for just one carrot
+//            if(vegetableList.get(i).contains("Carrot")) {
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Carrot Cake", "Tabantha Wheat", "Cane Sugar", "Goat Butter", vegetableList.get(i), "0", "Food", 7.0, 0, "Use two of the same carrots for special effects.", 0);
+//            }
+//            db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), "0", "0", "0", "0", "Food", 2.0, 0, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
+//            for (int j = 0; j < vegetableList.size(); j++) {
+//                if(vegetableList.get(i).contains("Carrot") && vegetableList.get(j).contains("Carrot")) {
+//                    db.insertRecipeWithLookups(sqLiteDatabase, "Carrot Cake", "Tabantha Wheat", "Cane Sugar", "Goat Butter", vegetableList.get(i), vegetableList.get(i), "Food", 7.0, 0, "Use two of the same carrots for special effects.", 0);
+//                }
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), vegetableList.get(j), "0", "0", "0", "Food", 2.0, 1, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
+//                for (int k = 0; k < vegetableList.size(); k++) {
+//                    db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), vegetableList.get(j), vegetableList.get(k), "0", "0", "Food", 2.0, 1, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
+//                    for (int m = 0; m < vegetableList.size(); m++) {
+//                        db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), vegetableList.get(j), vegetableList.get(k), vegetableList.get(m), "0", "Food", 2.0, 1, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
+//                        for (int n = 0; n < vegetableList.size(); n++) {
+//                            db.insertRecipeWithLookups(sqLiteDatabase, "Fresh Wild Greens", vegetableList.get(i), vegetableList.get(j), vegetableList.get(k), vegetableList.get(m), vegetableList.get(n), "Food", 2.0, 1, "Use other vegetables or more vegetables to increase Hearts Restored, or to add special effects.", 0);
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
-        //Don't know what extra receipe's there are though for Egg Pudding
+//        //Don't know what extra receipe's there are though for Egg Pudding
         db.insertRecipeWithLookups(sqLiteDatabase, "Egg Pudding", "Fresh Milk", "Bird Egg", "Cane Sugar", "0", "0", "Food", 3.0, 1, "Add unknown extra ingredients for possible special effects and/or increased hearts.", 0);
         db.insertRecipeWithLookups(sqLiteDatabase, "Egg Tart", "Bird Egg", "Tabantha Wheat", "Cane Sugar", "Goat Butter", "0", "Food", 9.0, 0, null, 0);
 
-        for(int i=0; i < mushroomList.size(); i++) {
-            db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Risotto", "Hylian Rice", "Goat Butter", "Rock Salt", mushroomList.get(i), "0", "Food", 3.0, 1, "Use other or two mushrooms to increase hearts restored.", 0);
-            db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), "0", "0", "0", "0", "Food", 1.0, 0, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
-            for (int j = 0; j < mushroomList.size(); j++) {
-                db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Risotto", "Hylian Rice", "Goat Butter", "Rock Salt", mushroomList.get(i), mushroomList.get(j), "Food", 3.0, 1, "Use other or two mushrooms to increase hearts restored.", 0);
-                db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), mushroomList.get(j), "0", "0", "0", "Food", 1.0, 1, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
-                for (int k = 0; k < mushroomList.size(); k++) {
-                    db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), mushroomList.get(j), mushroomList.get(k), "0", "0", "Food", 1.0, 1, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
-                    for (int m = 0; m < mushroomList.size(); m++) {
-                        db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), mushroomList.get(j), mushroomList.get(k), mushroomList.get(m), "0", "Food", 1.0, 1, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
-                        for (int n = 0; n < mushroomList.size(); n++) {
-                            db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), mushroomList.get(j), mushroomList.get(k), mushroomList.get(m), mushroomList.get(n), "Food", 1.0, 1, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
-                        }
-                    }
-                }
-            }
-        }
+//        for(int i=0; i < mushroomList.size(); i++) {
+//            db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Risotto", "Hylian Rice", "Goat Butter", "Rock Salt", mushroomList.get(i), "0", "Food", 3.0, 1, "Use other or two mushrooms to increase hearts restored.", 0);
+//            db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), "0", "0", "0", "0", "Food", 1.0, 0, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
+//            for (int j = 0; j < mushroomList.size(); j++) {
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Risotto", "Hylian Rice", "Goat Butter", "Rock Salt", mushroomList.get(i), mushroomList.get(j), "Food", 3.0, 1, "Use other or two mushrooms to increase hearts restored.", 0);
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), mushroomList.get(j), "0", "0", "0", "Food", 1.0, 1, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
+//                for (int k = 0; k < mushroomList.size(); k++) {
+//                    db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), mushroomList.get(j), mushroomList.get(k), "0", "0", "Food", 1.0, 1, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
+//                    for (int m = 0; m < mushroomList.size(); m++) {
+//                        db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), mushroomList.get(j), mushroomList.get(k), mushroomList.get(m), "0", "Food", 1.0, 1, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
+//                        for (int n = 0; n < mushroomList.size(); n++) {
+//                            db.insertRecipeWithLookups(sqLiteDatabase, "Mushroom Skewer", mushroomList.get(i), mushroomList.get(j), mushroomList.get(k), mushroomList.get(m), mushroomList.get(n), "Food", 1.0, 1, "Use other or more Mushrooms to restore more hearts or add special effects.", 0);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        for(int i=0; i < seafoodList.size(); i++) {
+//            db.insertRecipeWithLookups(sqLiteDatabase, "Seafood Meuniere", "Goat Butter", seafoodList.get(i), "0", "0", "0", "Food", 4.0, 1, "Use other or more fish to increase hearts restored or add special effect.", 0);
+//            if(seafoodList.get(i).contains("Porgy")) {
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Porgy Meuniere", "Tabantha Wheat", "Goat Butter", seafoodList.get(i), "0", "0", "Food", 8.0, -1, "Use other porgies or only one type of porgy for different special effects. Up to eight hearts.", 0);
+//            }
+//            for (int j = 0; j < seafoodList.size(); j++) {
+//                db.insertRecipeWithLookups(sqLiteDatabase, "Seafood Meuniere", "Goat Butter", seafoodList.get(i), seafoodList.get(j), "0", "0", "Food", 4.0, 1, "Use other or more fish to increase hearts restored or add special effect.", 0);
+//                if(seafoodList.get(i).contains("Porgy") && seafoodList.get(j).contains("Porgy")) {
+//                    db.insertRecipeWithLookups(sqLiteDatabase, "Porgy Meuniere", "Tabantha Wheat", "Goat Butter", seafoodList.get(i), seafoodList.get(j), "0", "Food", 8.0, -1, "Use other porgies or only one type of porgy for different special effects. Up to eight hearts.", 0);
+//                }
+//                for (int k = 0; k < seafoodList.size(); k++) {
+//                    db.insertRecipeWithLookups(sqLiteDatabase, "Seafood Meuniere", "Goat Butter", seafoodList.get(i), seafoodList.get(j), seafoodList.get(k), "0", "Food", 4.0, 1, "Use other or more fish to increase hearts restored or add special effects.", 0);
+//                    if(seafoodList.get(i).contains("Porgy") && seafoodList.get(j).contains("Porgy") && seafoodList.get(k).contains("Porgy")) {
+//                        db.insertRecipeWithLookups(sqLiteDatabase, "Porgy Meuniere", "Tabantha Wheat", "Goat Butter", seafoodList.get(i), seafoodList.get(j), seafoodList.get(k), "Food", 8.0, -1, "Use other porgies or only one type of porgy for different special effects. Up to eight hearts.", 0);
+//                    }
+//                    for (int m = 0; m < seafoodList.size(); m++) {
+//                        db.insertRecipeWithLookups(sqLiteDatabase, "Seafood Meuniere", "Goat Butter", seafoodList.get(i), seafoodList.get(j), seafoodList.get(k), seafoodList.get(m), "Food", 4.0, 1, "Use other or more fish to increase hearts restored or add special effect.", 0);
+//                    }
+//                }
+//            }
+//        }
 
-        for(int i=0; i < seafoodList.size(); i++) {
-            db.insertRecipeWithLookups(sqLiteDatabase, "Seafood Meuniere", "Goat Butter", seafoodList.get(i), "0", "0", "0", "Food", 4.0, 1, "Use other or more fish to increase hearts restored or add special effect.", 0);
-            if(seafoodList.get(i).contains("Porgy")) {
-                db.insertRecipeWithLookups(sqLiteDatabase, "Porgy Meuniere", "Tabantha Wheat", "Goat Butter", seafoodList.get(i), "0", "0", "Food", 8.0, -1, "Use other porgies or only one type of porgy for different special effects. Up to eight hearts.", 0);
-            }
-            for (int j = 0; j < seafoodList.size(); j++) {
-                db.insertRecipeWithLookups(sqLiteDatabase, "Seafood Meuniere", "Goat Butter", seafoodList.get(i), seafoodList.get(j), "0", "0", "Food", 4.0, 1, "Use other or more fish to increase hearts restored or add special effect.", 0);
-                if(seafoodList.get(i).contains("Porgy") && seafoodList.get(j).contains("Porgy")) {
-                    db.insertRecipeWithLookups(sqLiteDatabase, "Porgy Meuniere", "Tabantha Wheat", "Goat Butter", seafoodList.get(i), seafoodList.get(j), "0", "Food", 8.0, -1, "Use other porgies or only one type of porgy for different special effects. Up to eight hearts.", 0);
-                }
-                for (int k = 0; k < seafoodList.size(); k++) {
-                    db.insertRecipeWithLookups(sqLiteDatabase, "Seafood Meuniere", "Goat Butter", seafoodList.get(i), seafoodList.get(j), seafoodList.get(k), "0", "Food", 4.0, 1, "Use other or more fish to increase hearts restored or add special effects.", 0);
-                    if(seafoodList.get(i).contains("Porgy") && seafoodList.get(j).contains("Porgy") && seafoodList.get(k).contains("Porgy")) {
-                        db.insertRecipeWithLookups(sqLiteDatabase, "Porgy Meuniere", "Tabantha Wheat", "Goat Butter", seafoodList.get(i), seafoodList.get(j), seafoodList.get(k), "Food", 8.0, -1, "Use other porgies or only one type of porgy for different special effects. Up to eight hearts.", 0);
-                    }
-                    for (int m = 0; m < seafoodList.size(); m++) {
-                        db.insertRecipeWithLookups(sqLiteDatabase, "Seafood Meuniere", "Goat Butter", seafoodList.get(i), seafoodList.get(j), seafoodList.get(k), seafoodList.get(m), "Food", 4.0, 1, "Use other or more fish to increase hearts restored or add special effect.", 0);
-                    }
-                }
-            }
-        }
+        Log.d("Meats", "3");
+
         db.insertRecipeWithLookups(sqLiteDatabase, "Creamy Heart Soup", "Fresh Milk", "Voltfruit", "Hydromelon", "Hearty Radish", "Hearty Radish", "Food", 13.0, -1, null, 0);
         db.insertRecipeWithLookups(sqLiteDatabase, "Creamy Heart Soup", "Fresh Milk", "Voltfruit", "Hydromelon", "Hearty Radish", "0", "Food", 13.0, 0, null, 0);
         db.insertRecipeWithLookups(sqLiteDatabase, "Fried Egg and Rice", "Hylian Rice", "Bird Egg", "0", "0", "0", "Food", 4.0, 0, null, 0);
@@ -331,6 +342,9 @@ public class Seed {
 
         db.insertRecipeWithLookups(sqLiteDatabase, "Milk", "Fresh Milk", "0", "0", "0", "0", "Food", 3.0, 0, "Add unknown extra ingredients to increase the hearts restored or add a special effect.", 0);
 
+
+        sqLiteDatabase.setTransactionSuccessful();
+        sqLiteDatabase.endTransaction();
     }
 
     public static void addSingleRecipes(SQLiteDatabase sqLiteDatabase, SQLiteDBHelper db){

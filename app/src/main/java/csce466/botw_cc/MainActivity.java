@@ -61,10 +61,15 @@ public class MainActivity extends AppCompatActivity
         mTitle = getTitle();
 
         // Set up the drawer.
+
+
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         db = new SQLiteDBHelper(this);
+
+        //Comment 
+        //this.deleteDatabase("cooking_database");
         dbREAD = db.getReadableDatabase();
 
         final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
@@ -161,6 +166,8 @@ public class MainActivity extends AppCompatActivity
             mainInput.setText("");
             mainInput.setHint("Input Item");
             recipeName.setText(computeRecipe(dbREAD));
+            if (recipeName.getText().toString().equals("")) recipeName.setText("Dubious Food");
+
         }
     }
 
@@ -190,7 +197,7 @@ public class MainActivity extends AppCompatActivity
             recipeName.setText("");
         } else {
             recipeName.setText(computeRecipe(dbREAD));
-            if (recipeName.getText().equals("")) recipeName.setText("Dubious Food");
+            if (recipeName.getText().toString().equals("")) recipeName.setText("Dubious Food");
         }
     }
 
@@ -205,7 +212,7 @@ public class MainActivity extends AppCompatActivity
 
     public String computeRecipe(SQLiteDatabase dbREAD){
 
-        if(textList.size() <= 0 || !textList.get(0).getText().equals("")){
+        if(!textList.get(0).getText().toString().equals("")){
             String one = textList.get(0).getText().toString();
             String two = textList.get(1).getText().toString();
             String three = textList.get(2).getText().toString();

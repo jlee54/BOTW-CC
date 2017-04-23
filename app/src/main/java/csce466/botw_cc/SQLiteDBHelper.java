@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,11 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
     public static final String RECIPE_COLUMN_EFFECT = "effect";
     public static final String RECIPE_COLUMN_TIME = "time";
 
+    public static String sql = "INSERT INTO " + RECIPE_TABLE_NAME + " ("+RECIPE_COLUMN_NAME+", "+RECIPE_COLUMN_MATERIAL_1_ID+", "+RECIPE_COLUMN_MATERIAL_2_ID+"," +
+            " "+RECIPE_COLUMN_MATERIAL_3_ID+", "+RECIPE_COLUMN_MATERIAL_4_ID+", "+RECIPE_COLUMN_MATERIAL_5_ID+", "+RECIPE_COLUMN_TYPE+"," +
+            " "+RECIPE_COLUMN_HEARTS+", "+RECIPE_COLUMN_MODIFIER+", "+RECIPE_COLUMN_EFFECT+", "+RECIPE_COLUMN_TIME+") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static SQLiteStatement statement;
+
     public SQLiteDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -69,6 +75,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                 RECIPE_COLUMN_EFFECT + " TEXT, " +
                 RECIPE_COLUMN_TIME + " DECIMAL" + ")");
 
+        statement = sqLiteDatabase.compileStatement(sql);
         generateSeed(sqLiteDatabase);
     }
 
@@ -110,19 +117,41 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
     public void insertRecipe(SQLiteDatabase sqLiteDatabase, String name, int material1, int material2, int material3, int material4, int material5,
                              String type, double hearts, int modifier, String effect, double time){
 
-        ContentValues cv = new ContentValues();
-        cv.put(RECIPE_COLUMN_NAME, name);
-        cv.put(RECIPE_COLUMN_MATERIAL_1_ID, material1);
-        cv.put(RECIPE_COLUMN_MATERIAL_2_ID, material2);
-        cv.put(RECIPE_COLUMN_MATERIAL_3_ID, material3);
-        cv.put(RECIPE_COLUMN_MATERIAL_4_ID, material4);
-        cv.put(RECIPE_COLUMN_MATERIAL_5_ID, material5);
-        cv.put(RECIPE_COLUMN_TYPE, type);
-        cv.put(RECIPE_COLUMN_HEARTS, hearts);
-        cv.put(RECIPE_COLUMN_MODIFIER, modifier);
-        cv.put(RECIPE_COLUMN_EFFECT, effect);
-        cv.put(RECIPE_COLUMN_TIME, time);
-        sqLiteDatabase.insert(RECIPE_TABLE_NAME, null, cv);
+//        String sql = "INSERT INTO " + RECIPE_TABLE_NAME + " ("+RECIPE_COLUMN_NAME+", "+RECIPE_COLUMN_MATERIAL_1_ID+", "+RECIPE_COLUMN_MATERIAL_2_ID+"," +
+//                " "+RECIPE_COLUMN_MATERIAL_3_ID+", "+RECIPE_COLUMN_MATERIAL_4_ID+", "+RECIPE_COLUMN_MATERIAL_5_ID+", "+RECIPE_COLUMN_TYPE+"," +
+//                " "+RECIPE_COLUMN_HEARTS+", "+RECIPE_COLUMN_MODIFIER+", "+RECIPE_COLUMN_EFFECT+", "+RECIPE_COLUMN_TIME+") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        //SQLiteStatement statement = sqLiteDatabase.compileStatement(sql);
+
+        statement.bindString(1, name);
+        statement.bindLong(2, material1);
+        statement.bindLong(3, material2);
+        statement.bindLong(4, material3);
+        statement.bindLong(5, material4);
+        statement.bindLong(6, material5);
+        statement.bindString(7, type);
+        statement.bindDouble(8, hearts);
+        statement.bindLong(9, modifier);
+        if (effect == null || effect.isEmpty()){
+            statement.bindNull(10);
+        } else {
+            statement.bindString(10, effect);
+        }
+        statement.bindDouble(11, time);
+        statement.executeInsert();
+
+//        ContentValues cv = new ContentValues();
+//        cv.put(RECIPE_COLUMN_NAME, name);
+//        cv.put(RECIPE_COLUMN_MATERIAL_1_ID, material1);
+//        cv.put(RECIPE_COLUMN_MATERIAL_2_ID, material2);
+//        cv.put(RECIPE_COLUMN_MATERIAL_3_ID, material3);
+//        cv.put(RECIPE_COLUMN_MATERIAL_4_ID, material4);
+//        cv.put(RECIPE_COLUMN_MATERIAL_5_ID, material5);
+//        cv.put(RECIPE_COLUMN_TYPE, type);
+//        cv.put(RECIPE_COLUMN_HEARTS, hearts);
+//        cv.put(RECIPE_COLUMN_MODIFIER, modifier);
+//        cv.put(RECIPE_COLUMN_EFFECT, effect);
+//        cv.put(RECIPE_COLUMN_TIME, time);
+//        sqLiteDatabase.insert(RECIPE_TABLE_NAME, null, cv);
     }
 
     public static ArrayList<String> findMaterialsByName(SQLiteDatabase sqLiteDatabase, String name){
@@ -159,20 +188,23 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.query(true, MATERIAL_TABLE_NAME, new String[] { MATERIAL_COLUMN_ID, MATERIAL_COLUMN_NAME},
                 MATERIAL_COLUMN_NAME + " = ?", new String[] {name}, null, null, null, null, null);
         cursor.moveToFirst();
-        return cursor.getInt(cursor.getColumnIndex(MATERIAL_COLUMN_ID));
+        int ret_id = cursor.getInt(cursor.getColumnIndex(MATERIAL_COLUMN_ID));
+        cursor.close();
+        return ret_id;
     }
 
 
     public static ArrayList<String> findMaterialNamesBySubType(SQLiteDatabase sqLiteDatabase, String subtype){
-        Cursor cursor = sqLiteDatabase.query(true, MATERIAL_TABLE_NAME, new String[] { MATERIAL_COLUMN_ID, MATERIAL_COLUMN_SUBTYPE},
-                MATERIAL_COLUMN_SUBTYPE + " = ?", null, null, null, null, null);
+        ArrayList<String> arraylist = new ArrayList<String>();
 
-        ArrayList<String> results = new ArrayList<String>();
-        int i = 0;
-        while(cursor.moveToNext()){
-            results.add(cursor.getString(cursor.getColumnIndex(MATERIAL_COLUMN_NAME)));
+        String query = "SELECT " + MATERIAL_COLUMN_NAME + " FROM " + MATERIAL_TABLE_NAME + " WHERE " + MATERIAL_COLUMN_SUBTYPE + " = '"+subtype+"'";
+
+        Cursor c = sqLiteDatabase.rawQuery(query, null);
+        while(c.moveToNext()) {
+            arraylist.add(c.getString(0));
         }
-        return results;
+        c.close();
+        return arraylist;
     }
 
     public static int findRecipeIdByMaterials(SQLiteDatabase sqLiteDatabase, int materialId1, int materialId2, int materialId3, int materialId4, int materialId5){

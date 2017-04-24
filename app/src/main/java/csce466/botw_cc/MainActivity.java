@@ -30,6 +30,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +44,9 @@ public class MainActivity extends AppCompatActivity
     SQLiteDatabase dbREAD;
     final ArrayList<TextView> textList = new ArrayList<TextView>();
     TextView recipeName;
+    TextView recipeModifier;
+    TextView recipeHearts;
+    TextView recipeEffect;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -87,6 +92,9 @@ public class MainActivity extends AppCompatActivity
         final TextView suggestionInput = (EditText) findViewById(R.id.mainInputTextSuggestion);
         Button bAdd =(Button)findViewById(R.id.button_add);
         recipeName = (TextView) findViewById(R.id.recipeName);
+        recipeModifier = (TextView) findViewById(R.id.modifier);
+        recipeHearts = (TextView) findViewById(R.id.hearts);
+        recipeEffect = (TextView) findViewById(R.id.effect);
 
         //Bring keyboard up
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -166,9 +174,26 @@ public class MainActivity extends AppCompatActivity
                 textList.get(4).setText(toTitleCase(mainInput.getText().toString()));
             mainInput.setText("");
             mainInput.setHint("Input Item");
-            recipeName.setText(computeRecipe(dbREAD));
-            if (recipeName.getText().toString().equals("")) recipeName.setText("Dubious Food");
+            HashMap<String, String> recipe = computeRecipe(dbREAD);
+            String name = recipe.get("Name");
+            if (name == null) {
+                recipeName.setText("Dubious Food");
+                recipeModifier.setText("");
+                recipeHearts.setText("");
+                recipeEffect.setText("");
+            } else {
+                recipeName.setText(name);
+                if(Integer.parseInt(recipe.get("Modifier")) > 0) {
+                    recipeModifier.setText("<");
+                } else if(Integer.parseInt(recipe.get("Modifier")) < 0) {
+                    recipeModifier.setText(">");
+                } else {
+                    recipeModifier.setText("=");
+                }
 
+                recipeHearts.setText(recipe.get("Hearts"));
+                recipeEffect.setText(recipe.get("Effect"));
+             }
         }
     }
 
@@ -196,9 +221,30 @@ public class MainActivity extends AppCompatActivity
 
         if(textList.get(0).getText().toString().equals("")){
             recipeName.setText("");
+            recipeModifier.setText("");
+            recipeHearts.setText("");
+            recipeEffect.setText("");
         } else {
-            recipeName.setText(computeRecipe(dbREAD));
-            if (recipeName.getText().toString().equals("")) recipeName.setText("Dubious Food");
+            HashMap<String, String> recipe = computeRecipe(dbREAD);
+            String name = recipe.get("Name");
+            if (name == null) {
+                recipeName.setText("Dubious Food");
+                recipeModifier.setText("");
+                recipeHearts.setText("");
+                recipeEffect.setText("");
+            } else {
+                recipeName.setText(name);
+                if(Integer.parseInt(recipe.get("Modifier")) > 0) {
+                    recipeModifier.setText("<");
+                } else if(Integer.parseInt(recipe.get("Modifier")) < 0) {
+                    recipeModifier.setText(">");
+                } else {
+                    recipeModifier.setText("=");
+                }
+
+                recipeHearts.setText(recipe.get("Hearts"));
+                recipeEffect.setText(recipe.get("Effect"));
+            }
         }
     }
 
@@ -211,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public String computeRecipe(SQLiteDatabase dbREAD){
+    public HashMap<String, String>  computeRecipe(SQLiteDatabase dbREAD){
 
         if(!textList.get(0).getText().toString().equals("")){
             String one = textList.get(0).getText().toString();
@@ -228,13 +274,11 @@ public class MainActivity extends AppCompatActivity
                     five.equals("") ? 0 : SQLiteDBHelper.findMaterialIdByName(dbREAD, toTitleCase(five)));
 
 
-            String name =  recipe.get("Name");
-            if(name != null) {
-                return name;
-            }
+                return recipe;
+
         }
 
-        return "";
+        return new HashMap<>();
     }
 
     public static String toTitleCase(String givenString) {

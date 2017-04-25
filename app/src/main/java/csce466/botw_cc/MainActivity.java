@@ -29,6 +29,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.support.v7.app.ActionBar;
+
 
 import org.w3c.dom.Text;
 
@@ -67,15 +69,13 @@ public class MainActivity extends AppCompatActivity
         mTitle = getTitle();
 
         // Set up the drawer.
-
-
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        db = new SQLiteDBHelper(this);
 
-        //Comment 
-        //this.deleteDatabase("cooking_database");
+        db = new SQLiteDBHelper(this);
+        //UnComment this out to reset database
+        this.deleteDatabase("cooking_database");
         dbREAD = db.getReadableDatabase();
 
         final EditText mainInput = (EditText) findViewById(R.id.mainInputText);
@@ -97,8 +97,11 @@ public class MainActivity extends AppCompatActivity
         recipeEffect = (TextView) findViewById(R.id.effect);
 
         //Bring keyboard up
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        ((InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mainInput, 0);
+//        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//        ((InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mainInput, 0);
+//
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
 
         //fill inputs on button click
         bAdd.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +163,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onEnter(SQLiteDatabase dbREAD, TextView suggestionInput, TextView mainInput, TextView recipeName) {
-        if(!suggestionInput.getText().equals("")) {
+        if(!suggestionInput.getText().toString().equals("")) {
             mainInput.setText(suggestionInput.getText());
             if (textList.get(0).getText().toString().trim().equals(""))
                 textList.get(0).setText(toTitleCase(mainInput.getText().toString()));

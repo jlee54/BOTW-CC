@@ -187,9 +187,9 @@ public class MainActivity extends AppCompatActivity
             } else {
                 recipeName.setText(name);
                 if(Integer.parseInt(recipe.get("Modifier")) > 0) {
-                    recipeModifier.setText("<");
-                } else if(Integer.parseInt(recipe.get("Modifier")) < 0) {
                     recipeModifier.setText(">");
+                } else if(Integer.parseInt(recipe.get("Modifier")) < 0) {
+                    recipeModifier.setText("<");
                 } else {
                     recipeModifier.setText("=");
                 }
